@@ -24,6 +24,7 @@ pub enum OpCode {
     SubRegisterToRegisterReverse(u8, u8) , // SUBN Vx, Vy
     LoadFromMemoryToRegisters(u8), // LD Vx, [I]
     LoadFromRegistersToMemory(u8), // LD [I], Vx
+    StoreBCDRepresentationOfRegister(u8), // LD B, Vx
     Unknown,
 }
 
@@ -53,6 +54,7 @@ impl Display for OpCode {
             OpCode::SubRegisterToRegisterReverse(x, y) => { Display::fmt(&format!("SubRegisterToRegisterReverse(x={x}, y={y}"), f)}
             OpCode::LoadFromMemoryToRegisters(x) => { Display::fmt(&format!("LoadFromMemoryToRegisters(x={x}"), f)}
             OpCode::LoadFromRegistersToMemory(x) => { Display::fmt(&format!("LoadFromRegistersToMemory(x={x}"), f)}
+            OpCode::StoreBCDRepresentationOfRegister(x) => { Display::fmt(&format!("StoreBCDRepresentationOfRegister(x={x}"), f)}
         }
     }
 }

@@ -30,6 +30,7 @@ pub fn decode_instruction(instruction: u16) -> OpCode {
         (0x8, _, _, 0xE) => OpCode::ShiftLeftRegisterFromRegister(x as u8, y as u8),
         (0xA, _, _, _) => OpCode::SetIndex(nnn),
         (0xD, _, _, _) => OpCode::Display(x, y, n),
+        (0xF, _, 0x3, 0x3) => OpCode::StoreBCDRepresentationOfRegister(x as u8),
         (0xF, _, 0x5, 0x5) => OpCode::LoadFromRegistersToMemory(x as u8),
         (0xF, _, 0x6, 0x5) => OpCode::LoadFromMemoryToRegisters(x as u8),
         _ => OpCode::Unknown

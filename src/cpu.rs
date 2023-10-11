@@ -119,6 +119,15 @@ impl<'a> Cpu<'a> {
             OpCode::SetRegisterToRegisterValue(x, y) => {
                 self.v[x as usize] = self.v[y as usize];
             },
+            OpCode::StoreBCDRepresentationOfRegister(x) => {
+                let value = self.v[x as usize];
+                let hundreds = value / 100;
+                let tens = (value / 10) % 10;
+                let ones = value % 10;
+                self.memory[self.i as usize] = hundreds as u16;
+                self.memory[(self.i + 1) as usize] = tens as u16;
+                self.memory[(self.i + 2) as usize] = ones as u16;
+            }
             OpCode::LoadFromRegistersToMemory(x) => {
                 for i in 0..=x {
                     self.memory[(self.i + i as u16) as usize] = self.v[i as usize] as u16;
