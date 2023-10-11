@@ -36,10 +36,10 @@ impl Screen {
     }
 
     pub fn render(&mut self) {
-        self.canvas.set_draw_color(Color::BLACK);
+        self.canvas.set_draw_color(Color::RGB(134, 84, 3));
         self.canvas.clear();
 
-        self.canvas.set_draw_color(Color::YELLOW);
+        self.canvas.set_draw_color(Color::RGB(253, 195, 10));
         self.screen.iter().enumerate().for_each(|(index, line)| {
             line.iter().enumerate().for_each(|(sprite_index, sprite)| {
                 if *sprite {
