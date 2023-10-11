@@ -9,6 +9,7 @@ pub enum OpCode {
     AddRegister { register: usize, value: u8 },
     SetIndex(u16),
     Display(usize, usize, u8),
+    SkipIfEqual(u8, u8)
 }
 
 impl Display for OpCode {
@@ -21,6 +22,7 @@ impl Display for OpCode {
             OpCode::AddRegister { register, value } => { Display::fmt(&format!("AddRegister(register={register}, value={value})"), f)}
             OpCode::SetIndex(index) => { Display::fmt(&format!("SetIndex({index})", ), f)}
             OpCode::Display(x, y, n) => { Display::fmt(&format!("Display(x={x}, y={y}, n={n})"), f) }
+            OpCode::SkipIfEqual(x, kk) => { Display::fmt(&format!("SkipIfEqual(x={x}, kk={kk})"), f)}
         }
     }
 }

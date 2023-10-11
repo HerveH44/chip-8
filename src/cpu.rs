@@ -1,4 +1,5 @@
 use std::fs;
+use log::warn;
 use crate::decoder::decode_instruction;
 use crate::opcode::OpCode;
 use crate::screen::Screen;
@@ -56,7 +57,15 @@ impl<'a> Cpu<'a> {
             OpCode::SetIndex(index) => self.set_index(index),
             OpCode::ClearScreen => self.clear_screen(),
             OpCode::Display(vx, vy, nibble) => self.display(vx, vy, nibble),
-            _ => ()
+            OpCode::SkipIfEqual(register, value) => {
+                if self.v[register as usize] == value {
+                    self.pc+=2;
+                }
+            }
+            _ => {
+                warn!("Unknown opcode: {}", op_code);
+                ()
+            }
         }
 
         if self.should_render {
