@@ -22,6 +22,8 @@ pub enum OpCode {
     ShiftRightRegisterFromRegister(u8, u8), // SHR Vx, Vy
     ShiftLeftRegisterFromRegister(u8, u8), // SHL Vx, Vy
     SubRegisterToRegisterReverse(u8, u8) , // SUBN Vx, Vy
+    LoadFromMemoryToRegisters(u8), // LD Vx, [I]
+    LoadFromRegistersToMemory(u8), // LD [I], Vx
     Unknown,
 }
 
@@ -49,6 +51,8 @@ impl Display for OpCode {
             OpCode::ShiftRightRegisterFromRegister(x, y) => { Display::fmt(&format!("ShiftRightRegisterFromRegister(x={x}, y={y}"), f)}
             OpCode::ShiftLeftRegisterFromRegister(x, y) => { Display::fmt(&format!("ShiftLeftRegisterFromRegister(x={x}, y={y}"), f)}
             OpCode::SubRegisterToRegisterReverse(x, y) => { Display::fmt(&format!("SubRegisterToRegisterReverse(x={x}, y={y}"), f)}
+            OpCode::LoadFromMemoryToRegisters(x) => { Display::fmt(&format!("LoadFromMemoryToRegisters(x={x}"), f)}
+            OpCode::LoadFromRegistersToMemory(x) => { Display::fmt(&format!("LoadFromRegistersToMemory(x={x}"), f)}
         }
     }
 }

@@ -119,6 +119,16 @@ impl<'a> Cpu<'a> {
             OpCode::SetRegisterToRegisterValue(x, y) => {
                 self.v[x as usize] = self.v[y as usize];
             },
+            OpCode::LoadFromRegistersToMemory(x) => {
+                for i in 0..=x {
+                    self.memory[(self.i + i as u16) as usize] = self.v[i as usize] as u16;
+                }
+            }
+            OpCode::LoadFromMemoryToRegisters(x) => {
+                for i in 0..=x {
+                    self.v[i as usize] = self.memory[(self.i + i as u16) as usize] as u8;
+                }
+            }
             _ => {
                 warn!("Unknown opcode: {}", op_code);
                 ()
