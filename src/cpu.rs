@@ -61,7 +61,12 @@ impl<'a> Cpu<'a> {
                 if self.v[register as usize] == value {
                     self.pc+=2;
                 }
-            }
+            },
+            OpCode::SkipIfNotEqual(register, value) => {
+                if self.v[register as usize] != value {
+                    self.pc+=2;
+                }
+            },
             _ => {
                 warn!("Unknown opcode: {}", op_code);
                 ()
