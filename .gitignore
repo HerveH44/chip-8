@@ -1,1 +1,5 @@
 /target
+/.idea
+/logs
+
+chip8.log
