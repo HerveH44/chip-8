@@ -17,6 +17,7 @@ pub enum OpCode {
     SetRegisterToRegisterValueUsingOR(u8, u8), // OR Vx, Vy
     SetRegisterToRegisterValueUsingAND(u8, u8), // AND Vx, Vy
     SetRegisterToRegisterValueUsingXOR(u8, u8), // XOR Vx, Vy
+    AddRegisterToRegister(u8, u8), // ADD Vx, Vy
     Unknown,
 }
 
@@ -39,6 +40,7 @@ impl Display for OpCode {
             OpCode::SetRegisterToRegisterValueUsingOR(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValueUsingOR(x={x}, y={y}"), f)}
             OpCode::SetRegisterToRegisterValueUsingAND(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValueUsingAND(x={x}, y={y}"), f)}
             OpCode::SetRegisterToRegisterValueUsingXOR(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValueUsingXOR(x={x}, y={y}"), f)}
+            OpCode::AddRegisterToRegister(x, y) => { Display::fmt(&format!("AddRegisterToRegister(x={x}, y={y}"), f)}
         }
     }
 }

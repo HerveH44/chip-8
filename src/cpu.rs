@@ -73,6 +73,11 @@ impl<'a> Cpu<'a> {
             OpCode::SetRegisterToRegisterValueUsingXOR(x, y) => {
                 self.v[x as usize] = self.v[x as usize] ^ self.v[y as usize];
             },
+            OpCode::AddRegisterToRegister(x, y) => {
+                let (new_register_value, is_overflow)= self.v[x as usize].overflowing_add(self.v[y as usize]);
+                self.v[0xF] = if is_overflow { 1 } else { 0 };
+                self.v[x as usize] = new_register_value;
+            },
             OpCode::SetIndex(index) => self.set_index(index),
             OpCode::ClearScreen => self.clear_screen(),
             OpCode::Display(vx, vy, nibble) => self.display(vx, vy, nibble),
