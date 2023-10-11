@@ -1,13 +1,8 @@
-use std::any::Any;
-use std::collections::VecDeque;
 use std::fmt::{Debug, Display, Formatter};
 use std::fs;
 use std::fs::File;
-use std::hash::Hash;
 use std::io::Write;
-use std::ops::BitXor;
-use std::time::{Instant, SystemTime};
-use sdl2::EventPump;
+use std::time::SystemTime;
 use crate::screen::Screen;
 
 pub struct Cpu<'a> {
@@ -15,7 +10,6 @@ pub struct Cpu<'a> {
     pc: u16, //program counter
     v: [u8; 16], // registers
     i: u16, // index
-    stack: VecDeque<u16>,
     screen: &'a mut Screen,
     should_render: bool,
     pub log_file: File,
@@ -27,7 +21,6 @@ pub fn new(screen: &mut Screen) -> Cpu {
         pc: 0,
         v: [0; 16],
         i: 0,
-        stack: VecDeque::new(),
         screen,
         should_render: false,
         log_file: File::create(format!("log_instruction-{}.txt", SystemTime::now()
@@ -57,10 +50,6 @@ impl<'a> Cpu<'a> {
         bytes.iter().enumerate().for_each(| (i, &x )  | {
             self.memory[offset + i] = x.into();
         });
-    }
-
-    pub fn event_pump(&self) -> EventPump {
-        self.screen.event_pump()
     }
 
     pub fn tick(&mut self) {
@@ -192,10 +181,15 @@ mod tests {
     use crate::cpu::{new, OpCode};
     use crate::screen;
 
+    fn get_screen() -> screen::Screen {
+        let sdl_context = sdl2::init().unwrap();
+        screen::new(&sdl_context)
+    }
+
     #[test]
     fn can_load_rom_file() {
-        let mut myScreen = screen::new();
-        let mut instance = new(&mut myScreen);
+        let mut my_screen = get_screen();
+        let mut instance = new(&mut my_screen);
         let result = instance.load_rom("./roms/test.ch8");
 
         assert!(result.is_ok());
@@ -204,8 +198,8 @@ mod tests {
 
     #[test]
     fn throws_when_path_is_invalid() {
-        let mut myScreen = screen::new();
-        let mut instance = new(&mut myScreen);
+        let mut my_screen = get_screen();
+        let mut instance = new(&mut my_screen);
         let result = instance.load_rom("./roms/not_existing_file.ch8");
 
         assert!(result.is_err());
@@ -213,21 +207,13 @@ mod tests {
 
     #[test]
     fn can_log_the_instruction() {
-        let mut myScreen = screen::new();
-        let mut instance = new(&mut myScreen);
+        let mut my_screen = get_screen();
+        let mut instance = new(&mut my_screen);
         instance.load_rom("./roms/test.ch8").unwrap();
 
         let instruction = instance.fetch_next_instruction();
         let op_code = instance.decode_instruction(instruction);
         assert_eq!(op_code, OpCode::Jump(520))
-    }
-
-    #[test]
-    fn loop_over_bits() {
-        let n :u8 = 0b11110000;
-        for i in (0..8).rev() {
-            dbg!(n >> i & 1);
-        }
     }
 
 }

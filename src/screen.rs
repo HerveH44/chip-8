@@ -1,7 +1,7 @@
 use std::ops::BitXor;
-use sdl2::{EventPump, Sdl};
+use sdl2::Sdl;
 use sdl2::pixels::Color;
-use sdl2::rect::{Point, Rect};
+use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
 
 const GRID_X_SIZE: u32 = 64;
@@ -10,16 +10,7 @@ const DOT_SIZE_IN_PXS: u32 = 20;
 
 pub struct Screen {
     pub canvas: WindowCanvas,
-    pub sdl_context: Sdl, // TODO: remove this and put it outside
     pub screen: [[bool; 64]; 32],
-}
-
-impl Screen {
-
-}
-
-impl Screen {
-
 }
 
 impl Screen {
@@ -57,21 +48,16 @@ impl Screen {
                         (index * DOT_SIZE_IN_PXS as usize) as i32,
                         DOT_SIZE_IN_PXS,
                         DOT_SIZE_IN_PXS,
-                    ));
+                    )).unwrap();
                 }
             })
         });
         self.canvas.present()
     }
 
-    pub fn event_pump(&self) -> EventPump {
-        self.sdl_context.event_pump().unwrap()
-    }
 }
 
-pub fn new() -> Screen {
-    // DSL --
-    let sdl_context = sdl2::init().unwrap();
+pub fn new(sdl_context: &Sdl) -> Screen {
     let video_subsystem = sdl_context.video().unwrap();
 
     let window = video_subsystem.window(
@@ -92,7 +78,6 @@ pub fn new() -> Screen {
 
     Screen {
         canvas,
-        sdl_context,
         screen: [[false; 64]; 32]
     }
 }
