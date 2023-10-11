@@ -21,10 +21,6 @@ pub struct Cpu<'a> {
     pub log_file: File,
 }
 
-impl<'a> Cpu<'a> {
-
-}
-
 pub fn new(screen: &mut Screen) -> Cpu {
     Cpu {
         memory: [0; 4096],
