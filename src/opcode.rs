@@ -11,6 +11,7 @@ pub enum OpCode {
     Display(usize, usize, u8),
     SkipIfRegisterEquals(u8, u8),
     SkipIfRegisterNotEquals(u8, u8),
+    SkipIfBothRegistersEqual(u8, u8),
 }
 
 impl Display for OpCode {
@@ -25,6 +26,7 @@ impl Display for OpCode {
             OpCode::Display(x, y, n) => { Display::fmt(&format!("Display(x={x}, y={y}, n={n})"), f) }
             OpCode::SkipIfRegisterEquals(x, nn) => { Display::fmt(&format!("SkipIfEqual(x={x}, nn={nn})"), f)}
             OpCode::SkipIfRegisterNotEquals(x, nn) => { Display::fmt(&format!("SkipIfNotEqual(x={x}, nn={nn})"), f)}
+            OpCode::SkipIfBothRegistersEqual(x, y) => { Display::fmt(&format!("SkipIfBothRegistersEquals(x={x}, y={y})"), f)}
         }
     }
 }

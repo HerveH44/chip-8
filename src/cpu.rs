@@ -67,6 +67,11 @@ impl<'a> Cpu<'a> {
                     self.pc+=2;
                 }
             },
+            OpCode::SkipIfBothRegistersEqual(x, y) => {
+                if self.v[x as usize] == self.v[y as usize] {
+                    self.pc+=2;
+                }
+            },
             _ => {
                 warn!("Unknown opcode: {}", op_code);
                 ()
