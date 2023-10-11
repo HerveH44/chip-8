@@ -4,13 +4,13 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
 
-const GRID_X_SIZE: u32 = 64;
-const GRID_Y_SIZE: u32 = 32;
+const GRID_X_SIZE: usize = 64;
+const GRID_Y_SIZE: usize = 32;
 const DOT_SIZE_IN_PXS: u32 = 20;
 
 pub struct Screen {
     pub canvas: WindowCanvas,
-    pub screen: [[bool; 64]; 32],
+    pub screen: [[bool; GRID_X_SIZE]; GRID_Y_SIZE],
 }
 
 impl Screen {
@@ -62,8 +62,8 @@ pub fn new(sdl_context: &Sdl) -> Screen {
 
     let window = video_subsystem.window(
         "rust-sdl2 demo",
-        GRID_X_SIZE * DOT_SIZE_IN_PXS,
-        GRID_Y_SIZE * DOT_SIZE_IN_PXS
+        (GRID_X_SIZE) as u32 * DOT_SIZE_IN_PXS,
+        (GRID_Y_SIZE) as u32 * DOT_SIZE_IN_PXS
     )
         .position_centered()
         .opengl()

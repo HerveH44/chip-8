@@ -1,8 +1,6 @@
-use std::fmt::{Debug, Display, Formatter};
 use std::fs;
-use std::fs::File;
-use std::io::Write;
-use std::time::SystemTime;
+use crate::decoder::decode_instruction;
+use crate::opcode::OpCode;
 use crate::screen::Screen;
 
 pub struct Cpu<'a> {
@@ -12,7 +10,6 @@ pub struct Cpu<'a> {
     i: u16, // index
     screen: &'a mut Screen,
     should_render: bool,
-    pub log_file: File,
 }
 
 pub fn new(screen: &mut Screen) -> Cpu {
@@ -23,11 +20,6 @@ pub fn new(screen: &mut Screen) -> Cpu {
         i: 0,
         screen,
         should_render: false,
-        log_file: File::create(format!("log_instruction-{}.txt", SystemTime::now()
-            .duration_since(SystemTime::UNIX_EPOCH)
-            .unwrap()
-            .as_secs()))
-            .unwrap()
     }
 }
 
@@ -55,7 +47,7 @@ impl<'a> Cpu<'a> {
     pub fn tick(&mut self) {
         let instruction = self.fetch_next_instruction();
         self.pc+=2;
-        let op_code = self.decode_instruction(instruction);
+        let op_code = decode_instruction(instruction);
 
         match op_code {
             OpCode::Jump(next_pc) => self.pc = next_pc,
@@ -87,36 +79,12 @@ impl<'a> Cpu<'a> {
         self.v[register] = value
     }
 
-
     fn fetch_next_instruction(&self) -> u16 {
         let first_part = self.memory[self.pc as usize];
         let second_part = self.memory[(self.pc + 1) as usize];
 
         // combine first and second part as u16
         (first_part << 8) | second_part
-    }
-
-    fn decode_instruction(&mut self, instruction: u16) -> OpCode {
-        let kind = (instruction & 0xF000) >> 12;
-        let x = ((instruction & 0x0F00) >> 8) as usize;
-        let y = ((instruction & 0x00F0) >> 4) as usize;
-        let n = (instruction & 0x000F) as u8;
-        let nn = (instruction & 0x00FF) as u8;
-        let nnn = instruction & 0x0FFF;
-
-
-        let opcode = match (kind, x, y, n) {
-            (0x0, 0x0, 0xE, 0x0) => OpCode::ClearScreen,
-            (0x1, _, _, _) => OpCode::Jump(nnn),
-            (0x6, _, _, _) => OpCode::SetRegister {register: x, value: nn},
-            (0x7, _, _, _) => OpCode::AddRegister {register: x, value: nn},
-            (0xA, _, _, _) => OpCode::SetIndex(nnn),
-            (0xD, _, _, _) => OpCode::Display(x, y, n),
-            _ => OpCode::Unknown
-        };
-
-        self.log_file.write(format!("instruction={instruction}|kind={kind}|x={x}|y={y}|n={n}|nn={nn}|nnn={nnn}|opcode={opcode}\n").as_bytes()).unwrap();
-        return opcode
     }
 
     fn clear_screen(&mut self) {
@@ -150,35 +118,11 @@ impl<'a> Cpu<'a> {
 }
 
 
-#[derive(Copy, Clone, Debug, PartialEq)]
-enum OpCode {
-    ClearScreen,
-    Jump(u16),
-    Unknown,
-    SetRegister { register: usize, value: u8 },
-    AddRegister { register: usize, value: u8 },
-    SetIndex(u16),
-    Display(usize, usize, u8),
-}
-
-impl Display for OpCode {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match self {
-            OpCode::ClearScreen => { Display::fmt("ClearScreen", f) }
-            OpCode::Jump(jump) => { Display::fmt(&format!("Jump({jump})"), f)}
-            OpCode::Unknown => { Display::fmt("Unknown", f)}
-            OpCode::SetRegister { register, value } => { Display::fmt(&format!("SetRegister(register={register}, value={value})"), f)}
-            OpCode::AddRegister { register, value } => { Display::fmt(&format!("AddRegister(register={register}, value={value})"), f)}
-            OpCode::SetIndex(index) => { Display::fmt(&format!("SetIndex({index})", ), f)}
-            OpCode::Display(x, y, n) => { Display::fmt(&format!("Display(x={x}, y={y}, n={n})"), f) }
-        }
-    }
-}
-
-
 #[cfg(test)]
 mod tests {
-    use crate::cpu::{new, OpCode};
+    use crate::cpu::new;
+    use crate::decoder::decode_instruction;
+    use crate::opcode::OpCode;
     use crate::screen;
 
     fn get_screen() -> screen::Screen {
@@ -212,7 +156,7 @@ mod tests {
         instance.load_rom("./roms/test.ch8").unwrap();
 
         let instruction = instance.fetch_next_instruction();
-        let op_code = instance.decode_instruction(instruction);
+        let op_code = decode_instruction(instruction);
         assert_eq!(op_code, OpCode::Jump(520))
     }
 
