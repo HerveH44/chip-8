@@ -25,6 +25,7 @@ pub enum OpCode {
     LoadFromMemoryToRegisters(u8), // LD Vx, [I]
     LoadFromRegistersToMemory(u8), // LD [I], Vx
     StoreBCDRepresentationOfRegister(u8), // LD B, Vx
+    AddRegisterValueToIndex(u8), // ADD I, Vx
     Unknown,
 }
 
@@ -55,6 +56,7 @@ impl Display for OpCode {
             OpCode::LoadFromMemoryToRegisters(x) => { Display::fmt(&format!("LoadFromMemoryToRegisters(x={x}"), f)}
             OpCode::LoadFromRegistersToMemory(x) => { Display::fmt(&format!("LoadFromRegistersToMemory(x={x}"), f)}
             OpCode::StoreBCDRepresentationOfRegister(x) => { Display::fmt(&format!("StoreBCDRepresentationOfRegister(x={x}"), f)}
+            OpCode::AddRegisterValueToIndex(x) => { Display::fmt(&format!("AddRegisterValueToIndex(x={x}"), f)}
         }
     }
 }

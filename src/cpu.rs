@@ -119,6 +119,9 @@ impl<'a> Cpu<'a> {
             OpCode::SetRegisterToRegisterValue(x, y) => {
                 self.v[x as usize] = self.v[y as usize];
             },
+            OpCode::AddRegisterValueToIndex(x) => {
+                self.i += self.v[x as usize] as u16;
+            }
             OpCode::StoreBCDRepresentationOfRegister(x) => {
                 let value = self.v[x as usize];
                 let hundreds = value / 100;
