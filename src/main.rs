@@ -22,7 +22,7 @@ fn main() {
     let mut screen = screen::new(&sdl_context);
     let mut cpu = cpu::new(&mut screen);
     cpu.load_fonts("./roms/fonts.ch8").unwrap();
-    cpu.load_rom("./roms/ibm.ch8").unwrap();
+    cpu.load_rom("./roms/3-corax+.ch8").unwrap();
 
     let mut event_pump = sdl_context.event_pump().unwrap();
     'running: loop {
