@@ -64,6 +64,9 @@ impl<'a> Cpu<'a> {
             },
             OpCode::AddRegister {register, value} => self.add_to_register(register, value),
             OpCode::SetRegister {register, value} => self.set_to_register(register, value),
+            OpCode::SetRegisterToRegisterValueUsingOR(x, y) => {
+                self.v[x as usize] = self.v[x as usize] | self.v[y as usize];
+            },
             OpCode::SetIndex(index) => self.set_index(index),
             OpCode::ClearScreen => self.clear_screen(),
             OpCode::Display(vx, vy, nibble) => self.display(vx, vy, nibble),

@@ -6,14 +6,15 @@ pub enum OpCode {
     RetFromSubroutine, // RET
     Jump(u16), // JP addr
     CallSubroutine(u16), // CALL addr
-    SetRegister { register: usize, value: u8 },
-    AddRegister { register: usize, value: u8 },
-    SetIndex(u16),
-    Display(usize, usize, u8),
-    SkipIfRegisterEquals(u8, u8),
-    SkipIfRegisterNotEquals(u8, u8),
-    SkipIfBothRegistersEqual(u8, u8),
-    SetRegisterToRegisterValue(u8, u8),
+    SetRegister { register: usize, value: u8 }, // LD Vx, byte
+    AddRegister { register: usize, value: u8 }, // ADD Vx, byte
+    SetIndex(u16), // LD I, addr
+    Display(usize, usize, u8), // DRW Vx, Vy, nibble
+    SkipIfRegisterEquals(u8, u8), // SE Vx, byte
+    SkipIfRegisterNotEquals(u8, u8), // SNE Vx, byte
+    SkipIfBothRegistersEqual(u8, u8), // SE Vx, Vy
+    SetRegisterToRegisterValue(u8, u8), // LD Vx, Vy
+    SetRegisterToRegisterValueUsingOR(u8, u8), // OR Vx, Vy
     Unknown,
 }
 
@@ -33,6 +34,7 @@ impl Display for OpCode {
             OpCode::SetRegisterToRegisterValue(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValue(x={x}, y={y})"), f)}
             OpCode::CallSubroutine(nnn) => { Display::fmt(&format!("CallSubroutine(nnn={nnn})"), f)}
             OpCode::RetFromSubroutine => { Display::fmt(&format!("RetFromSubroutine"), f)}
+            OpCode::SetRegisterToRegisterValueUsingOR(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValueUsingOR(x={x}, y={y}"), f)}
         }
     }
 }

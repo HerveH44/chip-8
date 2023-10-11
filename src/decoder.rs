@@ -20,6 +20,7 @@ pub fn decode_instruction(instruction: u16) -> OpCode {
         (0x6, _, _, _) => OpCode::SetRegister {register: x, value: nn},
         (0x7, _, _, _) => OpCode::AddRegister {register: x, value: nn},
         (0x8, _, _, 0x0) => OpCode::SetRegisterToRegisterValue(x as u8, y as u8),
+        (0x8, _, _, 0x1) => OpCode::SetRegisterToRegisterValueUsingOR(x as u8, y as u8),
         (0xA, _, _, _) => OpCode::SetIndex(nnn),
         (0xD, _, _, _) => OpCode::Display(x, y, n),
         _ => OpCode::Unknown
