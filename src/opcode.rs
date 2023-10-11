@@ -1,6 +1,6 @@
 use std::fmt::{Display, Formatter};
 
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq )]
 pub enum OpCode {
     ClearScreen, // CLS
     RetFromSubroutine, // RET
@@ -15,6 +15,8 @@ pub enum OpCode {
     SkipIfBothRegistersEqual(u8, u8), // SE Vx, Vy
     SetRegisterToRegisterValue(u8, u8), // LD Vx, Vy
     SetRegisterToRegisterValueUsingOR(u8, u8), // OR Vx, Vy
+    SetRegisterToRegisterValueUsingAND(u8, u8), // AND Vx, Vy
+    SetRegisterToRegisterValueUsingXOR(u8, u8), // XOR Vx, Vy
     Unknown,
 }
 
@@ -35,6 +37,8 @@ impl Display for OpCode {
             OpCode::CallSubroutine(nnn) => { Display::fmt(&format!("CallSubroutine(nnn={nnn})"), f)}
             OpCode::RetFromSubroutine => { Display::fmt(&format!("RetFromSubroutine"), f)}
             OpCode::SetRegisterToRegisterValueUsingOR(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValueUsingOR(x={x}, y={y}"), f)}
+            OpCode::SetRegisterToRegisterValueUsingAND(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValueUsingAND(x={x}, y={y}"), f)}
+            OpCode::SetRegisterToRegisterValueUsingXOR(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValueUsingXOR(x={x}, y={y}"), f)}
         }
     }
 }

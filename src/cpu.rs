@@ -67,6 +67,12 @@ impl<'a> Cpu<'a> {
             OpCode::SetRegisterToRegisterValueUsingOR(x, y) => {
                 self.v[x as usize] = self.v[x as usize] | self.v[y as usize];
             },
+            OpCode::SetRegisterToRegisterValueUsingAND(x, y) => {
+                self.v[x as usize] = self.v[x as usize] & self.v[y as usize];
+            },
+            OpCode::SetRegisterToRegisterValueUsingXOR(x, y) => {
+                self.v[x as usize] = self.v[x as usize] ^ self.v[y as usize];
+            },
             OpCode::SetIndex(index) => self.set_index(index),
             OpCode::ClearScreen => self.clear_screen(),
             OpCode::Display(vx, vy, nibble) => self.display(vx, vy, nibble),
