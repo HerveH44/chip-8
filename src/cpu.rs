@@ -57,12 +57,12 @@ impl<'a> Cpu<'a> {
             OpCode::SetIndex(index) => self.set_index(index),
             OpCode::ClearScreen => self.clear_screen(),
             OpCode::Display(vx, vy, nibble) => self.display(vx, vy, nibble),
-            OpCode::SkipIfEqual(register, value) => {
+            OpCode::SkipIfRegisterEquals(register, value) => {
                 if self.v[register as usize] == value {
                     self.pc+=2;
                 }
             },
-            OpCode::SkipIfNotEqual(register, value) => {
+            OpCode::SkipIfRegisterNotEquals(register, value) => {
                 if self.v[register as usize] != value {
                     self.pc+=2;
                 }

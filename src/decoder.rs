@@ -13,8 +13,8 @@ pub fn decode_instruction(instruction: u16) -> OpCode {
     let opcode = match (kind, x, y, n) {
         (0x0, 0x0, 0xE, 0x0) => OpCode::ClearScreen,
         (0x1, _, _, _) => OpCode::Jump(nnn),
-        (0x3, _, _, _) => OpCode::SkipIfEqual(x as u8, nn),
-        (0x4, _, _, _) => OpCode::SkipIfNotEqual(x as u8, nn),
+        (0x3, _, _, _) => OpCode::SkipIfRegisterEquals(x as u8, nn),
+        (0x4, _, _, _) => OpCode::SkipIfRegisterNotEquals(x as u8, nn),
         (0x6, _, _, _) => OpCode::SetRegister {register: x, value: nn},
         (0x7, _, _, _) => OpCode::AddRegister {register: x, value: nn},
         (0xA, _, _, _) => OpCode::SetIndex(nnn),
