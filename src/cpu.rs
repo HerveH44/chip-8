@@ -89,6 +89,7 @@ impl<'a> Cpu<'a> {
 
     fn clear_screen(&mut self) {
         self.screen.clear();
+        self.should_render = true;
     }
 
     fn display(&mut self, x: usize, y: usize, nibble: u8) {
