@@ -21,6 +21,7 @@ pub enum OpCode {
     SubRegisterToRegister(u8, u8), // SUB Vx, Vy
     ShiftRightRegisterFromRegister(u8, u8), // SHR Vx, Vy
     ShiftLeftRegisterFromRegister(u8, u8), // SHL Vx, Vy
+    SubRegisterToRegisterReverse(u8, u8) , // SUBN Vx, Vy
     Unknown,
 }
 
@@ -47,6 +48,7 @@ impl Display for OpCode {
             OpCode::SubRegisterToRegister(x, y) => { Display::fmt(&format!("SubRegisterToRegister(x={x}, y={y}"), f)}
             OpCode::ShiftRightRegisterFromRegister(x, y) => { Display::fmt(&format!("ShiftRightRegisterFromRegister(x={x}, y={y}"), f)}
             OpCode::ShiftLeftRegisterFromRegister(x, y) => { Display::fmt(&format!("ShiftLeftRegisterFromRegister(x={x}, y={y}"), f)}
+            OpCode::SubRegisterToRegisterReverse(x, y) => { Display::fmt(&format!("SubRegisterToRegisterReverse(x={x}, y={y}"), f)}
         }
     }
 }

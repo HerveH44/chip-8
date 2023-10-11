@@ -91,9 +91,12 @@ impl<'a> Cpu<'a> {
             OpCode::ShiftLeftRegisterFromRegister(x, y) => {
                 // Check the least significant bit
                 self.v[0xF] = if self.v[y as usize] & 0x80 == 128 { 1 } else { 0 };
-
                 self.v[x as usize] = self.v[y as usize] << 1;
-
+            },
+            OpCode::SubRegisterToRegisterReverse(x, y) => {
+                let (new_register_value, is_overflow)= self.v[y as usize].overflowing_sub(self.v[x as usize]);
+                self.v[0xF] = if is_overflow { 0 } else { 1 };
+                self.v[x as usize] = new_register_value;
             },
             OpCode::SetIndex(index) => self.set_index(index),
             OpCode::ClearScreen => self.clear_screen(),
