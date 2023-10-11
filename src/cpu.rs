@@ -72,6 +72,9 @@ impl<'a> Cpu<'a> {
                     self.pc+=2;
                 }
             },
+            OpCode::SetRegisterToRegisterValue(x, y) => {
+                self.v[x as usize] = self.v[y as usize];
+            },
             _ => {
                 warn!("Unknown opcode: {}", op_code);
                 ()
