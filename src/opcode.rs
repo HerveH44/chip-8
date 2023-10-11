@@ -19,6 +19,8 @@ pub enum OpCode {
     SetRegisterToRegisterValueUsingXOR(u8, u8), // XOR Vx, Vy
     AddRegisterToRegister(u8, u8), // ADD Vx, Vy
     SubRegisterToRegister(u8, u8), // SUB Vx, Vy
+    ShiftRightRegisterFromRegister(u8, u8), // SHR Vx, Vy
+    ShiftLeftRegisterFromRegister(u8, u8), // SHL Vx, Vy
     Unknown,
 }
 
@@ -43,6 +45,8 @@ impl Display for OpCode {
             OpCode::SetRegisterToRegisterValueUsingXOR(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValueUsingXOR(x={x}, y={y}"), f)}
             OpCode::AddRegisterToRegister(x, y) => { Display::fmt(&format!("AddRegisterToRegister(x={x}, y={y}"), f)}
             OpCode::SubRegisterToRegister(x, y) => { Display::fmt(&format!("SubRegisterToRegister(x={x}, y={y}"), f)}
+            OpCode::ShiftRightRegisterFromRegister(x, y) => { Display::fmt(&format!("ShiftRightRegisterFromRegister(x={x}, y={y}"), f)}
+            OpCode::ShiftLeftRegisterFromRegister(x, y) => { Display::fmt(&format!("ShiftLeftRegisterFromRegister(x={x}, y={y}"), f)}
         }
     }
 }

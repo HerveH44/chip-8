@@ -83,6 +83,18 @@ impl<'a> Cpu<'a> {
                 self.v[0xF] = if is_overflow { 0 } else { 1 };
                 self.v[x as usize] = new_register_value;
             },
+            OpCode::ShiftRightRegisterFromRegister(x, y) => {
+                // Check the least significant bit
+                self.v[0xF] = if self.v[y as usize] & 0x1 == 1 { 1 } else { 0 };
+                self.v[x as usize] = self.v[y as usize] >> 1;
+            },
+            OpCode::ShiftLeftRegisterFromRegister(x, y) => {
+                // Check the least significant bit
+                self.v[0xF] = if self.v[y as usize] & 0x80 == 128 { 1 } else { 0 };
+
+                self.v[x as usize] = self.v[y as usize] << 1;
+
+            },
             OpCode::SetIndex(index) => self.set_index(index),
             OpCode::ClearScreen => self.clear_screen(),
             OpCode::Display(vx, vy, nibble) => self.display(vx, vy, nibble),
