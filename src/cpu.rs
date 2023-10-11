@@ -9,6 +9,7 @@ pub struct Cpu<'a> {
     pc: u16, //program counter
     v: [u8; 16], // registers
     i: u16, // index
+    stack: Vec<u16>,
     screen: &'a mut Screen,
     should_render: bool,
 }
@@ -19,6 +20,7 @@ pub fn new(screen: &mut Screen) -> Cpu {
         pc: 0,
         v: [0; 16],
         i: 0,
+        stack: Vec::new(),
         screen,
         should_render: false,
     }
@@ -52,6 +54,14 @@ impl<'a> Cpu<'a> {
 
         match op_code {
             OpCode::Jump(next_pc) => self.pc = next_pc,
+            OpCode::RetFromSubroutine => {
+                let return_address = self.stack.pop().unwrap();
+                self.pc = return_address;
+            },
+            OpCode::CallSubroutine(next_pc) => {
+                self.stack.push(self.pc);
+                self.pc = next_pc;
+            },
             OpCode::AddRegister {register, value} => self.add_to_register(register, value),
             OpCode::SetRegister {register, value} => self.set_to_register(register, value),
             OpCode::SetIndex(index) => self.set_index(index),
