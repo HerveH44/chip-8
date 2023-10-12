@@ -12,6 +12,8 @@ pub struct Cpu<'a> {
     stack: Vec<u16>,
     screen: &'a mut Screen,
     should_render: bool,
+    delay_timer: u8,
+    sound_timer: u8,
 }
 
 pub fn new(screen: &mut Screen) -> Cpu {
@@ -23,6 +25,8 @@ pub fn new(screen: &mut Screen) -> Cpu {
         stack: Vec::new(),
         screen,
         should_render: false,
+        delay_timer: 0,
+        sound_timer: 0,
     }
 }
 
@@ -141,6 +145,15 @@ impl<'a> Cpu<'a> {
                     self.v[i as usize] = self.memory[(self.i + i as u16) as usize] as u8;
                 }
             }
+            OpCode::SetRegisterFromDelayTimer(x) => {
+                self.v[x as usize] = self.delay_timer;
+            }
+            OpCode::SetDelayTimerFromRegister(x) => {
+                self.delay_timer = self.v[x as usize];
+            }
+            OpCode::SetSoundTimerFromRegister(x) => {
+                self.sound_timer = self.v[x as usize];
+            }
             _ => {
                 warn!("Unknown opcode: {}", op_code);
                 ()
@@ -151,6 +164,11 @@ impl<'a> Cpu<'a> {
             self.screen.render();
             self.should_render = false;
         }
+    }
+
+    pub fn tick_timers(&mut self) {
+        let _ = self.sound_timer.saturating_sub(1);
+        let _ = self.delay_timer.saturating_sub(1);
     }
 
     fn set_index(&mut self, index: u16) {

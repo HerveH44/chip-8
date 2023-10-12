@@ -26,6 +26,9 @@ pub enum OpCode {
     LoadFromRegistersToMemory(u8), // LD [I], Vx
     StoreBCDRepresentationOfRegister(u8), // LD B, Vx
     AddRegisterValueToIndex(u8), // ADD I, Vx
+    SetRegisterFromDelayTimer(u8), // LD Vx, DT
+    SetDelayTimerFromRegister(u8), // LD DT, Vx
+    SetSoundTimerFromRegister(u8), // LD ST, Vx
     Unknown,
 }
 
@@ -57,6 +60,9 @@ impl Display for OpCode {
             OpCode::LoadFromRegistersToMemory(x) => { Display::fmt(&format!("LoadFromRegistersToMemory(x={x}"), f)}
             OpCode::StoreBCDRepresentationOfRegister(x) => { Display::fmt(&format!("StoreBCDRepresentationOfRegister(x={x}"), f)}
             OpCode::AddRegisterValueToIndex(x) => { Display::fmt(&format!("AddRegisterValueToIndex(x={x}"), f)}
+            OpCode::SetRegisterFromDelayTimer(x) => { Display::fmt(&format!("SetDelayTimerValueToRegister(x={x}"), f)}
+            OpCode::SetDelayTimerFromRegister(x) => { Display::fmt(&format!("SetDelayTimerFromRegister(x={x}"), f)}
+            OpCode::SetSoundTimerFromRegister(x) => { Display::fmt(&format!("SetSoundTimerFromRegister(x={x}"), f)}
         }
     }
 }
