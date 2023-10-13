@@ -59,6 +59,7 @@ impl Cpu {
 
         match op_code {
             OpCode::Jump(next_pc) => self.pc = next_pc,
+            OpCode::JumpWithV0Offset(next_pc) => self.pc = next_pc.saturating_add(self.v[0x0] as u16),
             OpCode::RetFromSubroutine => {
                 let return_address = self.stack.pop().unwrap();
                 self.pc = return_address;

@@ -5,6 +5,7 @@ pub enum OpCode {
     ClearScreen, // CLS
     RetFromSubroutine, // RET
     Jump(u16), // JP addr
+    JumpWithV0Offset(u16), // JP V0, addr
     CallSubroutine(u16), // CALL addr
     SetRegister { register: usize, value: u8 }, // LD Vx, byte
     AddRegister { register: usize, value: u8 }, // ADD Vx, byte
@@ -38,6 +39,7 @@ impl Display for OpCode {
         match self {
             OpCode::ClearScreen => { Display::fmt("ClearScreen", f) }
             OpCode::Jump(jump) => { Display::fmt(&format!("Jump({jump})"), f)}
+            OpCode::JumpWithV0Offset(jump) => { Display::fmt(&format!("JumpWithV0Offset({jump})"), f)}
             OpCode::Unknown => { Display::fmt("Unknown", f)}
             OpCode::SetRegister { register, value } => { Display::fmt(&format!("SetRegister(register={register}, value={value})"), f)}
             OpCode::AddRegister { register, value } => { Display::fmt(&format!("AddRegister(register={register}, value={value})"), f)}
