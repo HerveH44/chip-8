@@ -1,8 +1,6 @@
 use std::fs;
 use std::ops::BitXor;
 use log::warn;
-use rand::Rng;
-use sdl2::sys::random;
 use crate::decoder::decode_instruction;
 use crate::opcode::OpCode;
 use crate::renderer::{GRID_X_SIZE, GRID_Y_SIZE};
@@ -17,6 +15,8 @@ pub struct Cpu {
     pub should_render: bool,
     delay_timer: u8,
     sound_timer: u8,
+    is_key_pressed: bool,
+    key_pressed: u16,
 }
 
 pub fn new() -> Cpu {
@@ -30,6 +30,8 @@ pub fn new() -> Cpu {
         should_render: false,
         delay_timer: 0,
         sound_timer: 0,
+        is_key_pressed: false,
+        key_pressed: 0,
     }
 }
 
@@ -170,6 +172,21 @@ impl Cpu {
             OpCode::LoadSpriteRepresentationInMemory(x) => {
                 self.i = self.v[x as usize] as u16 * 5;
             }
+            OpCode::GetKey(x) => {
+                if !self.is_key_pressed || self.key_pressed != x as u16 {
+                    self.pc -= 2;
+                }
+            }
+            OpCode::SkipIfKey(x) => {
+                if self.key_pressed == self.v[x] as u16 {
+                    self.pc += 2;
+                }
+            }
+            OpCode::SkipIfNotKey(x) => {
+                if self.key_pressed != self.v[x] as u16 {
+                    self.pc += 2;
+                }
+            }
             _ => {
                 warn!("Unknown opcode: {}", op_code);
                 ()
@@ -248,6 +265,15 @@ impl Cpu {
             return true;
         }
         false
+    }
+
+    pub fn set_key_pressed(&mut self, key: u16) {
+        self.is_key_pressed = true;
+        self.key_pressed = key;
+    }
+
+    pub fn set_key_released(&mut self) {
+        self.is_key_pressed = false;
     }
 }
 

@@ -8,8 +8,9 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 use std::thread::sleep;
 use std::time::{Duration, SystemTime};
+use log::info;
 use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
+use sdl2::keyboard::{Keycode, Scancode};
 use simplelog::{Config, LevelFilter, WriteLogger};
 
 fn main() {
@@ -28,7 +29,7 @@ fn main() {
     // CPU -- Loading fonts and rom
     let mut guard = cpu.lock().unwrap();
     guard.load_fonts("./roms/fonts.ch8").unwrap();
-    guard.load_rom("./roms/3-corax+.ch8").unwrap();
+    guard.load_rom("./roms/4-flags.ch8").unwrap();
     drop(guard);
 
     thread::spawn(move || {
@@ -49,10 +50,39 @@ fn main() {
 
         for event in event_pump.poll_iter() {
             match event {
-                Event::Quit {..} |
+                Event::Quit { .. } |
                 Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
-                    break 'running
-                },
+                    break 'running;
+                }
+                Event::KeyDown { keycode: Some(keycode), scancode: Some(scancode), .. } => {
+                    info!("Key pressed {keycode} with scancode {scancode}");
+                    let key: Option<u16> = match scancode {
+                        Scancode::Num1 => Some(0x1),
+                        Scancode::Num2 => Some(0x2),
+                        Scancode::Num3 => Some(0x3),
+                        Scancode::Num4 => Some(0xC),
+                        Scancode::Q => Some(0x4),
+                        Scancode::W => Some(0x5),
+                        Scancode::E => Some(0x6),
+                        Scancode::R => Some(0xD),
+                        Scancode::A => Some(0x7),
+                        Scancode::S => Some(0x8),
+                        Scancode::D => Some(0x9),
+                        Scancode::F => Some(0xE),
+                        Scancode::Z => Some(0xA),
+                        Scancode::X => Some(0x0),
+                        Scancode::C => Some(0xB),
+                        Scancode::V => Some(0xF),
+                        _ => None
+                    };
+
+                    let mut cpu_guard = cpu.lock().unwrap();
+                    if let Some(code) = key {
+                        cpu_guard.set_key_pressed(code);
+                    } else {
+                        cpu_guard.set_key_released();
+                    }
+                }
                 _ => {}
             }
         }

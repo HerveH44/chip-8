@@ -33,10 +33,10 @@ pub fn decode_instruction(instruction: u16) -> OpCode {
         (0xB, _, _, _) => OpCode::JumpWithV0Offset(nnn),
         (0xC, _, _, _) => OpCode::SetRegisterWithRandom(x, nn),
         (0xD, _, _, _) => OpCode::Draw(x, y, n),
-        // Ex9E - SKP Vx
-        // ExA1 - SKNP Vx
+        (0xE, _, 0x9, 0xE) => OpCode::SkipIfKey(x),
+        (0xE, _, 0xA, 0x1) => OpCode::SkipIfNotKey(x),
         (0xF, _, 0x0, 0x7) => OpCode::SetRegisterFromDelayTimer(x as u8),
-        // Fx0A - LD Vx, K
+        (0xF, _, 0x0, 0xA) => OpCode::GetKey(x),
         (0xF, _, 0x1, 0x5) => OpCode::SetDelayTimerFromRegister(x as u8),
         (0xF, _, 0x1, 0x8) => OpCode::SetSoundTimerFromRegister(x as u8),
         (0xF, _, 0x1, 0xE) => OpCode::AddRegisterValueToIndex(x as u8),
