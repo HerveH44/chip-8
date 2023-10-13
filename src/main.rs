@@ -28,7 +28,7 @@ fn main() {
     // CPU -- Loading fonts and rom
     let mut guard = cpu.lock().unwrap();
     guard.load_fonts("./roms/fonts.ch8").unwrap();
-    guard.load_rom("./roms/4-flags.ch8").unwrap();
+    guard.load_rom("./roms/3-corax+.ch8").unwrap();
     drop(guard);
 
     thread::spawn(move || {

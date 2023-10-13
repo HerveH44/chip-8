@@ -29,6 +29,7 @@ pub fn decode_instruction(instruction: u16) -> OpCode {
         (0x8, _, _, 0x7) => OpCode::SubRegisterToRegisterReverse(x as u8, y as u8),
         (0x8, _, _, 0xE) => OpCode::ShiftLeftRegisterFromRegister(x as u8, y as u8),
         (0xA, _, _, _) => OpCode::SetIndex(nnn),
+        (0x9, _, _, 0x0) => OpCode::SkipIfBothRegistersNotEqual(x as u8, y as u8),
         (0xD, _, _, _) => OpCode::Display(x, y, n),
         (0xF, _, 0x1, 0xE) => OpCode::AddRegisterValueToIndex(x as u8),
         (0xF, _, 0x3, 0x3) => OpCode::StoreBCDRepresentationOfRegister(x as u8),

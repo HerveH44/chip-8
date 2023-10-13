@@ -121,6 +121,11 @@ impl Cpu {
                     self.pc+=2;
                 }
             },
+            OpCode::SkipIfBothRegistersNotEqual(x, y) => {
+                if self.v[x as usize] != self.v[y as usize] {
+                    self.pc+=2;
+                }
+            },
             OpCode::SetRegisterToRegisterValue(x, y) => {
                 self.v[x as usize] = self.v[y as usize];
             },

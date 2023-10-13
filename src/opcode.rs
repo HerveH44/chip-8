@@ -27,8 +27,9 @@ pub enum OpCode {
     StoreBCDRepresentationOfRegister(u8), // LD B, Vx
     AddRegisterValueToIndex(u8), // ADD I, Vx
     SetRegisterFromDelayTimer(u8), // LD Vx, DT
-    SetDelayTimerFromRegister(u8), // LD DT, Vx
     SetSoundTimerFromRegister(u8), // LD ST, Vx
+    SetDelayTimerFromRegister(u8), // LD DT, Vx
+    SkipIfBothRegistersNotEqual(u8, u8), // SNE Vx, Vy
     Unknown,
 }
 
@@ -63,6 +64,7 @@ impl Display for OpCode {
             OpCode::SetRegisterFromDelayTimer(x) => { Display::fmt(&format!("SetDelayTimerValueToRegister(x={x}"), f)}
             OpCode::SetDelayTimerFromRegister(x) => { Display::fmt(&format!("SetDelayTimerFromRegister(x={x}"), f)}
             OpCode::SetSoundTimerFromRegister(x) => { Display::fmt(&format!("SetSoundTimerFromRegister(x={x}"), f)}
+            OpCode::SkipIfBothRegistersNotEqual(x, y) => { Display::fmt(&format!("SkipIfBothRegistersNotEqual(x={x}, y={y}"), f)}
         }
     }
 }
