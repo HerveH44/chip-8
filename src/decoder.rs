@@ -30,14 +30,21 @@ pub fn decode_instruction(instruction: u16) -> OpCode {
         (0x8, _, _, 0xE) => OpCode::ShiftLeftRegisterFromRegister(x as u8, y as u8),
         (0xA, _, _, _) => OpCode::SetIndex(nnn),
         (0x9, _, _, 0x0) => OpCode::SkipIfBothRegistersNotEqual(x as u8, y as u8),
-        (0xD, _, _, _) => OpCode::Display(x, y, n),
+        // Annn - LD I, addr
+        // Bnnn - JP V0, addr
+        // Cxkk - RND Vx, byte
+        (0xD, _, _, _) => OpCode::Draw(x, y, n),
+        // Ex9E - SKP Vx
+        // ExA1 - SKNP Vx
+        (0xF, _, 0x0, 0x7) => OpCode::SetRegisterFromDelayTimer(x as u8),
+        // Fx0A - LD Vx, K
+        (0xF, _, 0x1, 0x5) => OpCode::SetDelayTimerFromRegister(x as u8),
+        (0xF, _, 0x1, 0x8) => OpCode::SetSoundTimerFromRegister(x as u8),
         (0xF, _, 0x1, 0xE) => OpCode::AddRegisterValueToIndex(x as u8),
+        // Fx29 - LD F, Vx
         (0xF, _, 0x3, 0x3) => OpCode::StoreBCDRepresentationOfRegister(x as u8),
         (0xF, _, 0x5, 0x5) => OpCode::LoadFromRegistersToMemory(x as u8),
         (0xF, _, 0x6, 0x5) => OpCode::LoadFromMemoryToRegisters(x as u8),
-        (0xF, _, 0x0, 0x7) => OpCode::SetRegisterFromDelayTimer(x as u8),
-        (0xF, _, 0x1, 0x5) => OpCode::SetDelayTimerFromRegister(x as u8),
-        (0xF, _, 0x0, 0x8) => OpCode::SetSoundTimerFromRegister(x as u8),
         _ => OpCode::Unknown
     };
 

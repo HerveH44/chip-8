@@ -9,7 +9,7 @@ pub enum OpCode {
     SetRegister { register: usize, value: u8 }, // LD Vx, byte
     AddRegister { register: usize, value: u8 }, // ADD Vx, byte
     SetIndex(u16), // LD I, addr
-    Display(usize, usize, u8), // DRW Vx, Vy, nibble
+    Draw(usize, usize, u8), // DRW Vx, Vy, nibble
     SkipIfRegisterEquals(u8, u8), // SE Vx, byte
     SkipIfRegisterNotEquals(u8, u8), // SNE Vx, byte
     SkipIfBothRegistersEqual(u8, u8), // SE Vx, Vy
@@ -42,7 +42,7 @@ impl Display for OpCode {
             OpCode::SetRegister { register, value } => { Display::fmt(&format!("SetRegister(register={register}, value={value})"), f)}
             OpCode::AddRegister { register, value } => { Display::fmt(&format!("AddRegister(register={register}, value={value})"), f)}
             OpCode::SetIndex(index) => { Display::fmt(&format!("SetIndex({index})", ), f)}
-            OpCode::Display(x, y, n) => { Display::fmt(&format!("Display(x={x}, y={y}, n={n})"), f) }
+            OpCode::Draw(x, y, n) => { Display::fmt(&format!("Display(x={x}, y={y}, n={n})"), f) }
             OpCode::SkipIfRegisterEquals(x, nn) => { Display::fmt(&format!("SkipIfEqual(x={x}, nn={nn})"), f)}
             OpCode::SkipIfRegisterNotEquals(x, nn) => { Display::fmt(&format!("SkipIfNotEqual(x={x}, nn={nn})"), f)}
             OpCode::SkipIfBothRegistersEqual(x, y) => { Display::fmt(&format!("SkipIfBothRegistersEquals(x={x}, y={y})"), f)}

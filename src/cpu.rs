@@ -105,7 +105,7 @@ impl Cpu {
             },
             OpCode::SetIndex(index) => self.set_index(index),
             OpCode::ClearScreen => self.clear_screen(),
-            OpCode::Display(vx, vy, nibble) => self.display(vx, vy, nibble),
+            OpCode::Draw(vx, vy, nibble) => self.display(vx, vy, nibble),
             OpCode::SkipIfRegisterEquals(register, value) => {
                 if self.v[register as usize] == value {
                     self.pc+=2;
