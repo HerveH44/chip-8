@@ -89,28 +89,30 @@ impl Cpu {
             },
             OpCode::AddRegisterToRegister(x, y) => {
                 let (new_register_value, is_overflow)= self.v[x as usize].overflowing_add(self.v[y as usize]);
-                self.v[0xF] = if is_overflow { 1 } else { 0 };
                 self.v[x as usize] = new_register_value;
+                self.v[0xF] = if is_overflow { 1 } else { 0 };
             },
             OpCode::SubRegisterToRegister(x, y) => {
                 let (new_register_value, is_overflow)= self.v[x as usize].overflowing_sub(self.v[y as usize]);
-                self.v[0xF] = if is_overflow { 0 } else { 1 };
                 self.v[x as usize] = new_register_value;
+                self.v[0xF] = if is_overflow { 0 } else { 1 };
             },
             OpCode::ShiftRightRegisterFromRegister(x, y) => {
                 // Check the least significant bit
-                self.v[0xF] = if self.v[y as usize] & 0x1 == 1 { 1 } else { 0 };
+                let least_significant_bit = if self.v[y as usize] & 0x1 == 1 { 1 } else { 0 };
                 self.v[x as usize] = self.v[y as usize] >> 1;
+                self.v[0xF] = least_significant_bit;
             },
             OpCode::ShiftLeftRegisterFromRegister(x, y) => {
                 // Check the least significant bit
-                self.v[0xF] = if self.v[y as usize] & 0x80 == 128 { 1 } else { 0 };
+                let least_significant_bit = if self.v[y as usize] & 0x80 == 128 { 1 } else { 0 };
                 self.v[x as usize] = self.v[y as usize] << 1;
+                self.v[0xF] = least_significant_bit;
             },
             OpCode::SubRegisterToRegisterReverse(x, y) => {
                 let (new_register_value, is_overflow)= self.v[y as usize].overflowing_sub(self.v[x as usize]);
-                self.v[0xF] = if is_overflow { 0 } else { 1 };
                 self.v[x as usize] = new_register_value;
+                self.v[0xF] = if is_overflow { 0 } else { 1 };
             },
             OpCode::SetIndex(index) => self.set_index(index),
             OpCode::ClearScreen => self.clear_screen(),
@@ -178,12 +180,12 @@ impl Cpu {
                 }
             }
             OpCode::SkipIfKey(x) => {
-                if self.key_pressed == self.v[x] as u16 {
+                if self.is_key_pressed && self.key_pressed == self.v[x] as u16 {
                     self.pc += 2;
                 }
             }
             OpCode::SkipIfNotKey(x) => {
-                if self.key_pressed != self.v[x] as u16 {
+                if self.is_key_pressed && self.key_pressed != self.v[x] as u16 {
                     self.pc += 2;
                 }
             }
@@ -195,8 +197,8 @@ impl Cpu {
     }
 
     pub fn tick_timers(&mut self) {
-        let _ = self.sound_timer.saturating_sub(1);
-        let _ = self.delay_timer.saturating_sub(1);
+        self.sound_timer = self.sound_timer.saturating_sub(1);
+        self.delay_timer = self.delay_timer.saturating_sub(1);
     }
 
     fn set_index(&mut self, index: u16) {

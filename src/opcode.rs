@@ -69,7 +69,7 @@ impl Display for OpCode {
             OpCode::LoadFromRegistersToMemory(x) => { Display::fmt(&format!("LoadFromRegistersToMemory(x={x})"), f)}
             OpCode::StoreBCDRepresentationOfRegister(x) => { Display::fmt(&format!("StoreBCDRepresentationOfRegister(x={x})"), f)}
             OpCode::AddRegisterValueToIndex(x) => { Display::fmt(&format!("AddRegisterValueToIndex(x={x})"), f)}
-            OpCode::SetRegisterFromDelayTimer(x) => { Display::fmt(&format!("SetDelayTimerValueToRegister(x={x})"), f)}
+            OpCode::SetRegisterFromDelayTimer(x) => { Display::fmt(&format!("SetRegisterFromDelayTimer(x={x})"), f)}
             OpCode::SetDelayTimerFromRegister(x) => { Display::fmt(&format!("SetDelayTimerFromRegister(x={x})"), f)}
             OpCode::SetSoundTimerFromRegister(x) => { Display::fmt(&format!("SetSoundTimerFromRegister(x={x})"), f)}
             OpCode::SkipIfBothRegistersNotEqual(x, y) => { Display::fmt(&format!("SkipIfBothRegistersNotEqual(x={x}, y={y})"), f)}

@@ -29,7 +29,7 @@ fn main() {
     // CPU -- Loading fonts and rom
     let mut guard = cpu.lock().unwrap();
     guard.load_fonts("./roms/fonts.ch8").unwrap();
-    guard.load_rom("./roms/4-flags.ch8").unwrap();
+    guard.load_rom("./roms/invaders.ch8").unwrap();
     drop(guard);
 
     thread::spawn(move || {
@@ -83,6 +83,10 @@ fn main() {
                         cpu_guard.set_key_released();
                     }
                 }
+                Event::KeyUp { .. } => {
+                    let mut cpu_guard = cpu.lock().unwrap();
+                    cpu_guard.set_key_released();
+                }
                 _ => {}
             }
         }
@@ -94,6 +98,6 @@ fn main() {
         }
         drop(cpu_guard);
 
-        sleep(Duration::from_secs_f64(1.0 / 3000.0).saturating_sub(start.elapsed().unwrap()));
+        sleep(Duration::from_secs_f64(1.0 / 300.0).saturating_sub(start.elapsed().unwrap()));
     }
 }
