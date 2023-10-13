@@ -1,46 +1,28 @@
-use std::ops::BitXor;
 use sdl2::Sdl;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::render::WindowCanvas;
 
-const GRID_X_SIZE: usize = 64;
-const GRID_Y_SIZE: usize = 32;
+pub const GRID_X_SIZE: usize = 64;
+pub const GRID_Y_SIZE: usize = 32;
 const DOT_SIZE_IN_PXS: u32 = 20;
 
-pub struct Screen {
+const BACKGROUND_COLOR: Color = Color::RGB(134, 84, 3);
+const FONT_COLOR: Color = Color::RGB(253, 195, 10);
+
+
+pub struct Renderer {
     pub canvas: WindowCanvas,
-    pub screen: [[bool; GRID_X_SIZE]; GRID_Y_SIZE],
 }
 
-impl Screen {
+impl Renderer {
 
-    pub fn clear(&mut self) {
-        for (_, row) in self.screen.iter_mut().enumerate() {
-            for (_, col) in row.iter_mut().enumerate() {
-                *col = false;
-            }
-        }
-    }
-
-    pub fn draw_pixel(&mut self, x: usize, y: usize, value: bool) -> bool {
-        let current_sprite_value = self.screen[y][x];
-        let new_sprite_value = current_sprite_value.bitxor(value);
-
-        self.screen[y][x] = new_sprite_value;
-
-        if current_sprite_value == true && new_sprite_value == false {
-            return true;
-        }
-        false
-    }
-
-    pub fn render(&mut self) {
-        self.canvas.set_draw_color(Color::RGB(134, 84, 3));
+    pub fn render(&mut self, screen: [[bool; GRID_X_SIZE]; GRID_Y_SIZE]) {
+        self.canvas.set_draw_color(BACKGROUND_COLOR);
         self.canvas.clear();
 
-        self.canvas.set_draw_color(Color::RGB(253, 195, 10));
-        self.screen.iter().enumerate().for_each(|(index, line)| {
+        self.canvas.set_draw_color(FONT_COLOR);
+        screen.iter().enumerate().for_each(|(index, line)| {
             line.iter().enumerate().for_each(|(sprite_index, sprite)| {
                 if *sprite {
                     self.canvas.fill_rect(Rect::new(
@@ -54,10 +36,9 @@ impl Screen {
         });
         self.canvas.present()
     }
-
 }
 
-pub fn new(sdl_context: &Sdl) -> Screen {
+pub fn new(sdl_context: &Sdl) -> Renderer {
     let video_subsystem = sdl_context.video().unwrap();
 
     let window = video_subsystem.window(
@@ -76,8 +57,7 @@ pub fn new(sdl_context: &Sdl) -> Screen {
     canvas.clear();
     canvas.present();
 
-    Screen {
+    Renderer {
         canvas,
-        screen: [[false; 64]; 32]
     }
 }

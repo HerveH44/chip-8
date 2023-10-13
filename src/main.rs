@@ -1,5 +1,5 @@
 mod cpu;
-mod screen;
+mod renderer;
 mod decoder;
 mod opcode;
 
@@ -21,8 +21,9 @@ fn main() {
 
     // DSL --
     let sdl_context = sdl2::init().unwrap();
-    let mut screen = screen::new(&sdl_context);
-    let mut cpu = Arc::new(Mutex::new(cpu::new(&mut screen)));
+    let mut screen = renderer::new(&sdl_context);
+    let cpu = Arc::new(Mutex::new(cpu::new()));
+    let cpu_clone = Arc::clone(&cpu);
 
     // CPU -- Loading fonts and rom
     let mut guard = cpu.lock().unwrap();
@@ -30,14 +31,15 @@ fn main() {
     guard.load_rom("./roms/4-flags.ch8").unwrap();
     drop(guard);
 
-    let cpu_clone = Arc::clone(&cpu);
     thread::spawn(move || {
         loop {
             let start = SystemTime::now();
+
             let mut timers_cpu = cpu_clone.lock().unwrap();
             timers_cpu.tick_timers();
             drop(timers_cpu);
-            sleep(Duration::from_secs_f64(1.0 / 60.0).saturating_sub(start.elapsed()?));
+
+            sleep(Duration::from_secs_f64(1.0 / 60.0).saturating_sub(start.elapsed().unwrap()));
         }
     });
 
@@ -54,8 +56,13 @@ fn main() {
                 _ => {}
             }
         }
-
-        cpu.tick();
+        let mut cpu_guard = cpu.lock().unwrap();
+        cpu_guard.tick();
+        if cpu_guard.should_render {
+            screen.render(cpu_guard.screen);
+            cpu_guard.should_render = false;
+        }
+        drop(cpu_guard);
 
         sleep(Duration::from_secs_f64(1.0 / 3000.0).saturating_sub(start.elapsed().unwrap()));
     }

@@ -1,36 +1,37 @@
 use std::fs;
+use std::ops::BitXor;
 use log::warn;
 use crate::decoder::decode_instruction;
 use crate::opcode::OpCode;
-use crate::screen::Screen;
+use crate::renderer::{GRID_X_SIZE, GRID_Y_SIZE};
 
-pub struct Cpu<'a> {
+pub struct Cpu {
     memory: [u16; 4096],
     pc: u16, //program counter
     v: [u8; 16], // registers
     i: u16, // index
     stack: Vec<u16>,
-    screen: &'a mut Screen,
-    should_render: bool,
+    pub screen: [[bool; GRID_X_SIZE]; GRID_Y_SIZE],
+    pub should_render: bool,
     delay_timer: u8,
     sound_timer: u8,
 }
 
-pub fn new(screen: &mut Screen) -> Cpu {
+pub fn new() -> Cpu {
     Cpu {
         memory: [0; 4096],
         pc: 0,
         v: [0; 16],
         i: 0,
         stack: Vec::new(),
-        screen,
+        screen: [[false; GRID_X_SIZE]; GRID_Y_SIZE],
         should_render: false,
         delay_timer: 0,
         sound_timer: 0,
     }
 }
 
-impl<'a> Cpu<'a> {
+impl Cpu {
 
     pub fn load_rom(&mut self, path: &str) -> Result<(), &str> {
         let bytes = fs::read(path).map_err(|_|"can't read rom file")?;
@@ -159,11 +160,6 @@ impl<'a> Cpu<'a> {
                 ()
             }
         }
-
-        if self.should_render {
-            self.screen.render();
-            self.should_render = false;
-        }
     }
 
     pub fn tick_timers(&mut self) {
@@ -194,7 +190,11 @@ impl<'a> Cpu<'a> {
     }
 
     fn clear_screen(&mut self) {
-        self.screen.clear();
+        for (_, row) in self.screen.iter_mut().enumerate() {
+            for (_, col) in row.iter_mut().enumerate() {
+                *col = false;
+            }
+        }
         self.should_render = true;
     }
 
@@ -210,7 +210,7 @@ impl<'a> Cpu<'a> {
             'columns: for i in (0..8).rev() {
                 // update the screen sprite
                 let sprite_value_suggestion = if (sprite_data >> i & 1) >= 1 { true } else { false };
-                let collision: bool = self.screen.draw_pixel(vx as usize, vy as usize, sprite_value_suggestion);
+                let collision: bool = self.draw_pixel(vx as usize, vy as usize, sprite_value_suggestion);
                 if collision {
                     self.v[0xF] = 1;
                 }
@@ -222,6 +222,18 @@ impl<'a> Cpu<'a> {
         }
         self.should_render = true;
     }
+
+    fn draw_pixel(&mut self, x: usize, y: usize, value: bool) -> bool {
+        let current_sprite_value = self.screen[y][x];
+        let new_sprite_value = current_sprite_value.bitxor(value);
+
+        self.screen[y][x] = new_sprite_value;
+
+        if current_sprite_value == true && new_sprite_value == false {
+            return true;
+        }
+        false
+    }
 }
 
 
@@ -230,17 +242,17 @@ mod tests {
     use crate::cpu::new;
     use crate::decoder::decode_instruction;
     use crate::opcode::OpCode;
-    use crate::screen;
+    use crate::renderer;
 
-    fn get_screen() -> screen::Screen {
+    fn get_screen() -> renderer::Renderer {
         let sdl_context = sdl2::init().unwrap();
-        screen::new(&sdl_context)
+        renderer::new(&sdl_context)
     }
 
     #[test]
     fn can_load_rom_file() {
         let mut my_screen = get_screen();
-        let mut instance = new(&mut my_screen);
+        let mut instance = new();
         let result = instance.load_rom("./roms/test.ch8");
 
         assert!(result.is_ok());
@@ -250,7 +262,7 @@ mod tests {
     #[test]
     fn throws_when_path_is_invalid() {
         let mut my_screen = get_screen();
-        let mut instance = new(&mut my_screen);
+        let mut instance = new();
         let result = instance.load_rom("./roms/not_existing_file.ch8");
 
         assert!(result.is_err());
@@ -259,7 +271,7 @@ mod tests {
     #[test]
     fn can_log_the_instruction() {
         let mut my_screen = get_screen();
-        let mut instance = new(&mut my_screen);
+        let mut instance = new();
         instance.load_rom("./roms/test.ch8").unwrap();
 
         let instruction = instance.fetch_next_instruction();
