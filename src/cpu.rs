@@ -1,6 +1,8 @@
 use std::fs;
 use std::ops::BitXor;
 use log::warn;
+use rand::Rng;
+use sdl2::sys::random;
 use crate::decoder::decode_instruction;
 use crate::opcode::OpCode;
 use crate::renderer::{GRID_X_SIZE, GRID_Y_SIZE};
@@ -78,6 +80,10 @@ impl Cpu {
             },
             OpCode::SetRegisterToRegisterValueUsingXOR(x, y) => {
                 self.v[x as usize] = self.v[x as usize] ^ self.v[y as usize];
+            },
+            OpCode::SetRegisterWithRandom(x, nn) => {
+                let random_number: u8 = rand::random();
+                self.v[x] = random_number.saturating_add(nn);
             },
             OpCode::AddRegisterToRegister(x, y) => {
                 let (new_register_value, is_overflow)= self.v[x as usize].overflowing_add(self.v[y as usize]);

@@ -31,7 +31,7 @@ pub fn decode_instruction(instruction: u16) -> OpCode {
         (0x9, _, _, 0x0) => OpCode::SkipIfBothRegistersNotEqual(x as u8, y as u8),
         (0xA, _, _, _) => OpCode::SetIndex(nnn),
         (0xB, _, _, _) => OpCode::JumpWithV0Offset(nnn),
-        // Cxkk - RND Vx, byte
+        (0xC, _, _, _) => OpCode::SetRegisterWithRandom(x, nn),
         (0xD, _, _, _) => OpCode::Draw(x, y, n),
         // Ex9E - SKP Vx
         // ExA1 - SKNP Vx

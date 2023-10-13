@@ -32,6 +32,7 @@ pub enum OpCode {
     SetDelayTimerFromRegister(u8), // LD DT, Vx
     SkipIfBothRegistersNotEqual(u8, u8), // SNE Vx, Vy
     Unknown,
+    SetRegisterWithRandom(usize, u8),
 }
 
 impl Display for OpCode {
@@ -42,6 +43,7 @@ impl Display for OpCode {
             OpCode::JumpWithV0Offset(jump) => { Display::fmt(&format!("JumpWithV0Offset({jump})"), f)}
             OpCode::Unknown => { Display::fmt("Unknown", f)}
             OpCode::SetRegister { register, value } => { Display::fmt(&format!("SetRegister(register={register}, value={value})"), f)}
+            OpCode::SetRegisterWithRandom(register, value) => { Display::fmt(&format!("SetRegisterWithRandom(register={register}, value={value})"), f)}
             OpCode::AddRegister { register, value } => { Display::fmt(&format!("AddRegister(register={register}, value={value})"), f)}
             OpCode::SetIndex(index) => { Display::fmt(&format!("SetIndex({index})", ), f)}
             OpCode::Draw(x, y, n) => { Display::fmt(&format!("Display(x={x}, y={y}, n={n})"), f) }
