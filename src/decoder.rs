@@ -40,7 +40,7 @@ pub fn decode_instruction(instruction: u16) -> OpCode {
         (0xF, _, 0x1, 0x5) => OpCode::SetDelayTimerFromRegister(x as u8),
         (0xF, _, 0x1, 0x8) => OpCode::SetSoundTimerFromRegister(x as u8),
         (0xF, _, 0x1, 0xE) => OpCode::AddRegisterValueToIndex(x as u8),
-        // Fx29 - LD F, Vx
+        (0xF, _, 0x2, 0x9) => OpCode::LoadSpriteRepresentationInMemory(x as u8),
         (0xF, _, 0x3, 0x3) => OpCode::StoreBCDRepresentationOfRegister(x as u8),
         (0xF, _, 0x5, 0x5) => OpCode::LoadFromRegistersToMemory(x as u8),
         (0xF, _, 0x6, 0x5) => OpCode::LoadFromMemoryToRegisters(x as u8),

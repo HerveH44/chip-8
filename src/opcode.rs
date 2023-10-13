@@ -33,6 +33,7 @@ pub enum OpCode {
     SkipIfBothRegistersNotEqual(u8, u8), // SNE Vx, Vy
     Unknown,
     SetRegisterWithRandom(usize, u8),
+    LoadSpriteRepresentationInMemory(u8),
 }
 
 impl Display for OpCode {
@@ -53,22 +54,23 @@ impl Display for OpCode {
             OpCode::SetRegisterToRegisterValue(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValue(x={x}, y={y})"), f)}
             OpCode::CallSubroutine(nnn) => { Display::fmt(&format!("CallSubroutine(nnn={nnn})"), f)}
             OpCode::RetFromSubroutine => { Display::fmt(&format!("RetFromSubroutine"), f)}
-            OpCode::SetRegisterToRegisterValueUsingOR(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValueUsingOR(x={x}, y={y}"), f)}
-            OpCode::SetRegisterToRegisterValueUsingAND(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValueUsingAND(x={x}, y={y}"), f)}
-            OpCode::SetRegisterToRegisterValueUsingXOR(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValueUsingXOR(x={x}, y={y}"), f)}
-            OpCode::AddRegisterToRegister(x, y) => { Display::fmt(&format!("AddRegisterToRegister(x={x}, y={y}"), f)}
-            OpCode::SubRegisterToRegister(x, y) => { Display::fmt(&format!("SubRegisterToRegister(x={x}, y={y}"), f)}
-            OpCode::ShiftRightRegisterFromRegister(x, y) => { Display::fmt(&format!("ShiftRightRegisterFromRegister(x={x}, y={y}"), f)}
-            OpCode::ShiftLeftRegisterFromRegister(x, y) => { Display::fmt(&format!("ShiftLeftRegisterFromRegister(x={x}, y={y}"), f)}
-            OpCode::SubRegisterToRegisterReverse(x, y) => { Display::fmt(&format!("SubRegisterToRegisterReverse(x={x}, y={y}"), f)}
-            OpCode::LoadFromMemoryToRegisters(x) => { Display::fmt(&format!("LoadFromMemoryToRegisters(x={x}"), f)}
-            OpCode::LoadFromRegistersToMemory(x) => { Display::fmt(&format!("LoadFromRegistersToMemory(x={x}"), f)}
-            OpCode::StoreBCDRepresentationOfRegister(x) => { Display::fmt(&format!("StoreBCDRepresentationOfRegister(x={x}"), f)}
-            OpCode::AddRegisterValueToIndex(x) => { Display::fmt(&format!("AddRegisterValueToIndex(x={x}"), f)}
-            OpCode::SetRegisterFromDelayTimer(x) => { Display::fmt(&format!("SetDelayTimerValueToRegister(x={x}"), f)}
-            OpCode::SetDelayTimerFromRegister(x) => { Display::fmt(&format!("SetDelayTimerFromRegister(x={x}"), f)}
-            OpCode::SetSoundTimerFromRegister(x) => { Display::fmt(&format!("SetSoundTimerFromRegister(x={x}"), f)}
-            OpCode::SkipIfBothRegistersNotEqual(x, y) => { Display::fmt(&format!("SkipIfBothRegistersNotEqual(x={x}, y={y}"), f)}
+            OpCode::SetRegisterToRegisterValueUsingOR(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValueUsingOR(x={x}, y={y})"), f)}
+            OpCode::SetRegisterToRegisterValueUsingAND(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValueUsingAND(x={x}, y={y})"), f)}
+            OpCode::SetRegisterToRegisterValueUsingXOR(x, y) => { Display::fmt(&format!("SetRegisterToRegisterValueUsingXOR(x={x}, y={y})"), f)}
+            OpCode::AddRegisterToRegister(x, y) => { Display::fmt(&format!("AddRegisterToRegister(x={x}, y={y})"), f)}
+            OpCode::SubRegisterToRegister(x, y) => { Display::fmt(&format!("SubRegisterToRegister(x={x}, y={y})"), f)}
+            OpCode::ShiftRightRegisterFromRegister(x, y) => { Display::fmt(&format!("ShiftRightRegisterFromRegister(x={x}, y={y})"), f)}
+            OpCode::ShiftLeftRegisterFromRegister(x, y) => { Display::fmt(&format!("ShiftLeftRegisterFromRegister(x={x}, y={y})"), f)}
+            OpCode::SubRegisterToRegisterReverse(x, y) => { Display::fmt(&format!("SubRegisterToRegisterReverse(x={x}, y={y})"), f)}
+            OpCode::LoadFromMemoryToRegisters(x) => { Display::fmt(&format!("LoadFromMemoryToRegisters(x={x})"), f)}
+            OpCode::LoadFromRegistersToMemory(x) => { Display::fmt(&format!("LoadFromRegistersToMemory(x={x})"), f)}
+            OpCode::StoreBCDRepresentationOfRegister(x) => { Display::fmt(&format!("StoreBCDRepresentationOfRegister(x={x})"), f)}
+            OpCode::AddRegisterValueToIndex(x) => { Display::fmt(&format!("AddRegisterValueToIndex(x={x})"), f)}
+            OpCode::SetRegisterFromDelayTimer(x) => { Display::fmt(&format!("SetDelayTimerValueToRegister(x={x})"), f)}
+            OpCode::SetDelayTimerFromRegister(x) => { Display::fmt(&format!("SetDelayTimerFromRegister(x={x)}"), f)}
+            OpCode::SetSoundTimerFromRegister(x) => { Display::fmt(&format!("SetSoundTimerFromRegister(x={x})"), f)}
+            OpCode::SkipIfBothRegistersNotEqual(x, y) => { Display::fmt(&format!("SkipIfBothRegistersNotEqual(x={x}, y={y})"), f)}
+            OpCode::LoadSpriteRepresentationInMemory(x) => { Display::fmt(&format!("LoadSpriteRepresentationInMemory(x={x})"), f)}
         }
     }
 }

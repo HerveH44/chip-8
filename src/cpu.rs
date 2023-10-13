@@ -167,6 +167,9 @@ impl Cpu {
             OpCode::SetSoundTimerFromRegister(x) => {
                 self.sound_timer = self.v[x as usize];
             }
+            OpCode::LoadSpriteRepresentationInMemory(x) => {
+                self.i = self.v[x as usize] as u16 * 5;
+            }
             _ => {
                 warn!("Unknown opcode: {}", op_code);
                 ()
