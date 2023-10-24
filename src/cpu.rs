@@ -1,5 +1,6 @@
 use std::fs;
 use std::ops::BitXor;
+use std::time::Instant;
 use log::warn;
 use crate::decoder::decode_instruction;
 use crate::opcode::OpCode;
@@ -16,7 +17,8 @@ pub struct Cpu {
     delay_timer: u8,
     sound_timer: u8,
     is_key_pressed: bool,
-    key_pressed: u16,
+    key_pressed: Option<u16>,
+    last_ticked_at: Instant,
 }
 
 pub fn new() -> Cpu {
@@ -31,7 +33,14 @@ pub fn new() -> Cpu {
         delay_timer: 0,
         sound_timer: 0,
         is_key_pressed: false,
-        key_pressed: 0,
+        key_pressed: None,
+        last_ticked_at: Instant::now()
+    }
+}
+
+impl Default for Cpu {
+    fn default() -> Self {
+        new()
     }
 }
 
@@ -175,17 +184,17 @@ impl Cpu {
                 self.i = self.v[x as usize] as u16 * 5;
             }
             OpCode::GetKey(x) => {
-                if !self.is_key_pressed || self.key_pressed != x as u16 {
+                if !self.is_key_pressed || self.key_pressed != Some(self.v[x] as u16) {
                     self.pc -= 2;
                 }
             }
             OpCode::SkipIfKey(x) => {
-                if self.is_key_pressed && self.key_pressed == self.v[x] as u16 {
+                if self.is_key_pressed && self.key_pressed == Some(self.v[x] as u16) {
                     self.pc += 2;
                 }
             }
             OpCode::SkipIfNotKey(x) => {
-                if self.is_key_pressed && self.key_pressed != self.v[x] as u16 {
+                if self.is_key_pressed && self.key_pressed != Some(self.v[x] as u16) {
                     self.pc += 2;
                 }
             }
@@ -197,8 +206,12 @@ impl Cpu {
     }
 
     pub fn tick_timers(&mut self) {
-        self.sound_timer = self.sound_timer.saturating_sub(1);
-        self.delay_timer = self.delay_timer.saturating_sub(1);
+        let duration = self.last_ticked_at.elapsed();
+        if duration.as_millis() > (1000 / 60) as u128 {
+            self.sound_timer = self.sound_timer.saturating_sub(1);
+            self.delay_timer = self.delay_timer.saturating_sub(1);
+            self.last_ticked_at = Instant::now();
+        }
     }
 
     fn set_index(&mut self, index: u16) {
@@ -271,7 +284,7 @@ impl Cpu {
 
     pub fn set_key_pressed(&mut self, key: u16) {
         self.is_key_pressed = true;
-        self.key_pressed = key;
+        self.key_pressed = Some(key);
     }
 
     pub fn set_key_released(&mut self) {
@@ -285,16 +298,9 @@ mod tests {
     use crate::cpu::new;
     use crate::decoder::decode_instruction;
     use crate::opcode::OpCode;
-    use crate::renderer;
-
-    fn get_screen() -> renderer::Renderer {
-        let sdl_context = sdl2::init().unwrap();
-        renderer::new(&sdl_context)
-    }
 
     #[test]
     fn can_load_rom_file() {
-        let mut my_screen = get_screen();
         let mut instance = new();
         let result = instance.load_rom("./roms/test.ch8");
 
@@ -304,7 +310,6 @@ mod tests {
 
     #[test]
     fn throws_when_path_is_invalid() {
-        let mut my_screen = get_screen();
         let mut instance = new();
         let result = instance.load_rom("./roms/not_existing_file.ch8");
 
@@ -313,7 +318,6 @@ mod tests {
 
     #[test]
     fn can_log_the_instruction() {
-        let mut my_screen = get_screen();
         let mut instance = new();
         instance.load_rom("./roms/test.ch8").unwrap();
 

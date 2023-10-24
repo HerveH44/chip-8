@@ -5,7 +5,7 @@ use sdl2::render::WindowCanvas;
 
 pub const GRID_X_SIZE: usize = 64;
 pub const GRID_Y_SIZE: usize = 32;
-const DOT_SIZE_IN_PXS: u32 = 20;
+const DOT_SIZE_IN_PXS: u32 = 10;
 
 const BACKGROUND_COLOR: Color = Color::RGB(134, 84, 3);
 const FONT_COLOR: Color = Color::RGB(253, 195, 10);

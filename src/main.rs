@@ -4,14 +4,13 @@ mod decoder;
 mod opcode;
 
 use std::fs::File;
-use std::sync::{Arc, Mutex};
-use std::thread;
 use std::thread::sleep;
 use std::time::{Duration, SystemTime};
 use log::info;
 use sdl2::event::Event;
 use sdl2::keyboard::{Keycode, Scancode};
 use simplelog::{Config, LevelFilter, WriteLogger};
+use crate::cpu::Cpu;
 
 fn main() {
     WriteLogger::init(
@@ -23,26 +22,11 @@ fn main() {
     // DSL --
     let sdl_context = sdl2::init().unwrap();
     let mut screen = renderer::new(&sdl_context);
-    let cpu = Arc::new(Mutex::new(cpu::new()));
-    let cpu_clone = Arc::clone(&cpu);
+    let mut cpu = Cpu::default();
 
     // CPU -- Loading fonts and rom
-    let mut guard = cpu.lock().unwrap();
-    guard.load_fonts("./roms/fonts.ch8").unwrap();
-    guard.load_rom("./roms/invaders.ch8").unwrap();
-    drop(guard);
-
-    thread::spawn(move || {
-        loop {
-            let start = SystemTime::now();
-
-            let mut timers_cpu = cpu_clone.lock().unwrap();
-            timers_cpu.tick_timers();
-            drop(timers_cpu);
-
-            sleep(Duration::from_secs_f64(1.0 / 60.0).saturating_sub(start.elapsed().unwrap()));
-        }
-    });
+    cpu.load_fonts("./roms/fonts.ch8").unwrap();
+    cpu.load_rom("./roms/invaders.ch8").unwrap();
 
     let mut event_pump = sdl_context.event_pump().unwrap();
     'running: loop {
@@ -76,28 +60,25 @@ fn main() {
                         _ => None
                     };
 
-                    let mut cpu_guard = cpu.lock().unwrap();
                     if let Some(code) = key {
-                        cpu_guard.set_key_pressed(code);
+                        cpu.set_key_pressed(code);
                     } else {
-                        cpu_guard.set_key_released();
+                        cpu.set_key_released();
                     }
                 }
                 Event::KeyUp { .. } => {
-                    let mut cpu_guard = cpu.lock().unwrap();
-                    cpu_guard.set_key_released();
+                    cpu.set_key_released();
                 }
                 _ => {}
             }
         }
-        let mut cpu_guard = cpu.lock().unwrap();
-        cpu_guard.tick();
-        if cpu_guard.should_render {
-            screen.render(cpu_guard.screen);
-            cpu_guard.should_render = false;
+        cpu.tick_timers();
+        cpu.tick();
+        if cpu.should_render {
+            screen.render(cpu.screen);
+            cpu.should_render = false;
         }
-        drop(cpu_guard);
 
-        sleep(Duration::from_secs_f64(1.0 / 300.0).saturating_sub(start.elapsed().unwrap()));
+        sleep(Duration::from_secs_f64(1.0 / 3000.0).saturating_sub(start.elapsed().unwrap()));
     }
 }
