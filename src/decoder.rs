@@ -1,4 +1,3 @@
-use log::info;
 use crate::opcode::OpCode;
 
 pub fn decode_instruction(instruction: u16) -> OpCode {
@@ -17,8 +16,14 @@ pub fn decode_instruction(instruction: u16) -> OpCode {
         (0x3, _, _, _) => OpCode::SkipIfRegisterEquals(x as u8, nn),
         (0x4, _, _, _) => OpCode::SkipIfRegisterNotEquals(x as u8, nn),
         (0x5, _, _, 0x0) => OpCode::SkipIfBothRegistersEqual(x as u8, y as u8),
-        (0x6, _, _, _) => OpCode::SetRegister {register: x, value: nn},
-        (0x7, _, _, _) => OpCode::AddRegister {register: x, value: nn},
+        (0x6, _, _, _) => OpCode::SetRegister {
+            register: x,
+            value: nn,
+        },
+        (0x7, _, _, _) => OpCode::AddRegister {
+            register: x,
+            value: nn,
+        },
         (0x8, _, _, 0x0) => OpCode::SetRegisterToRegisterValue(x as u8, y as u8),
         (0x8, _, _, 0x1) => OpCode::SetRegisterToRegisterValueUsingOR(x as u8, y as u8),
         (0x8, _, _, 0x2) => OpCode::SetRegisterToRegisterValueUsingAND(x as u8, y as u8),
@@ -44,9 +49,11 @@ pub fn decode_instruction(instruction: u16) -> OpCode {
         (0xF, _, 0x3, 0x3) => OpCode::StoreBCDRepresentationOfRegister(x as u8),
         (0xF, _, 0x5, 0x5) => OpCode::LoadFromRegistersToMemory(x as u8),
         (0xF, _, 0x6, 0x5) => OpCode::LoadFromMemoryToRegisters(x as u8),
-        _ => OpCode::Unknown
+        _ => OpCode::Unknown,
     };
 
-    info!("instruction={instruction}|kind={kind}|x={x}|y={y}|n={n}|nn={nn}|nnn={nnn}|opcode={opcode}");
-    return opcode
+    // info!("instruction={instruction}|opcode={opcode}");
+    println!("instruction={:#x}|opcode={:?}", instruction, opcode);
+    // println!("instruction={:#x}", instruction);
+    opcode
 }
