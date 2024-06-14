@@ -1,7 +1,7 @@
 use crate::decoder::decode_instruction;
 use crate::opcode::OpCode;
 use crate::renderer::{GRID_X_SIZE, GRID_Y_SIZE};
-use log::warn;
+use log::{logger, warn};
 use std::collections::HashSet;
 use std::fs;
 use std::ops::BitXor;
@@ -215,7 +215,7 @@ impl Cpu {
                 warn!("Unknown opcode: {}", op_code);
             }
         }
-        println!("pc={}|i={}|regs={:?}", self.pc, self.i, self.v);
+        log::info!("pc={}|i={}|regs={:?}", self.pc, self.i, self.v);
     }
 
     pub fn tick_timers(&mut self) {

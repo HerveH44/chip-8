@@ -4,7 +4,7 @@ mod opcode;
 mod renderer;
 
 use crate::cpu::Cpu;
-use log::info;
+use rfd::FileDialog;
 use sdl2::event::Event;
 use sdl2::keyboard::{Keycode, Scancode};
 use simplelog::{
@@ -34,14 +34,27 @@ fn main() {
     ])
     .unwrap();
 
-    // DSL --
     let sdl_context = sdl2::init().unwrap();
     let mut screen = renderer::new(&sdl_context);
     let mut cpu = Cpu::default();
 
     // CPU -- Loading fonts and rom
     cpu.load_fonts("./roms/fonts.ch8").unwrap();
-    cpu.load_rom("./roms/invaders.ch8").unwrap();
+
+    let rom_path = FileDialog::new()
+        .add_filter("ch8", &["ch8"])
+        .set_directory("./roms")
+        .pick_file()
+        .expect("You need to choose a rom");
+
+    // DSL --
+    cpu.load_rom(
+        rom_path
+            .to_owned()
+            .to_str()
+            .expect("there should be a path"),
+    )
+    .unwrap();
 
     let mut event_pump = sdl_context.event_pump().unwrap();
     'running: loop {

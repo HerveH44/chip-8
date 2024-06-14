@@ -1,3 +1,5 @@
+use log::info;
+
 use crate::opcode::OpCode;
 
 pub fn decode_instruction(instruction: u16) -> OpCode {
@@ -52,8 +54,6 @@ pub fn decode_instruction(instruction: u16) -> OpCode {
         _ => OpCode::Unknown,
     };
 
-    // info!("instruction={instruction}|opcode={opcode}");
-    println!("instruction={:#x}|opcode={:?}", instruction, opcode);
-    // println!("instruction={:#x}", instruction);
+    info!("instruction={instruction}|opcode={opcode}");
     opcode
 }
