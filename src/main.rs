@@ -70,7 +70,6 @@ fn main() {
                     break 'running;
                 }
                 Event::KeyDown {
-                    keycode: Some(keycode),
                     scancode: Some(scancode),
                     ..
                 } => {

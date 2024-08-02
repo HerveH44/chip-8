@@ -1,7 +1,7 @@
 use crate::decoder::decode_instruction;
 use crate::opcode::OpCode;
 use crate::renderer::{GRID_X_SIZE, GRID_Y_SIZE};
-use log::{logger, warn};
+use log::warn;
 use std::collections::HashSet;
 use std::fs;
 use std::ops::BitXor;
@@ -248,8 +248,8 @@ impl Cpu {
     }
 
     fn clear_screen(&mut self) {
-        self.screen.iter_mut().enumerate().for_each(|(_, row)| {
-            row.iter_mut().enumerate().for_each(|(_, col)| {
+        self.screen.iter_mut().for_each(|row| {
+            row.iter_mut().for_each(|col| {
                 *col = false;
             });
         });
